@@ -82,7 +82,42 @@ namespace WebSocketServer.Tests
                           @"Origin: http://example.com" + "\r\n" +
                           "Sec-WebSocket-Protocol: chat, superchat" + "\r\n" +
                           "Sec-WebSocket-Version: 13";
-            Dictionary<string, string> expected = new Dictionary<string,string>(); // TODO: Initialize to an appropriate value
+            Dictionary<string, string> expected = new Dictionary<string, string>(); // TODO: Initialize to an appropriate value
+            expected["HOST"] = "server.example.com";
+            expected["UPGRADE"] = "websocket";
+            expected["CONNECTION"] = "Upgrade";
+            expected["Sec-WebSocket-Key"] = "dGhlIHNhbXBsZSBub25jZQ==";
+            expected["ORIGIN"] = @"http://example.com";
+            expected["Sec-WebSocket-Protocol"] = "chat, superchat";
+            expected["Sec-WebSocket-Version"] = "13";
+            Dictionary<string, string> actual;
+            actual = target.ExtractMessageHeaders(message);
+            bool equals = true;
+            foreach (string key in actual.Keys)
+                equals = equals && expected.ContainsKey(key);
+            foreach (string val in actual.Values)
+                equals = equals && actual.ContainsValue(val);
+            Assert.IsTrue(equals);
+        }
+
+        /// <summary>
+        ///A test for ExtractMessageHeaders
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("WebSocketServer.dll")]
+        public void ExtractMessageHeadersConnectionHeaderMultipleTokens()
+        {
+            WebSocketClientConnection_Accessor target = new WebSocketClientConnection_Accessor();
+            string message =
+                          "GET /chat HTTP/1.1" + "\r\n" +
+                          "Host: server.example.com" + "\r\n" +
+                          "Upgrade: websocket" + "\r\n" +
+                          "Connection: keep-alive,another-bugger,uPgrAde" + "\r\n" +
+                          "Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==" + "\r\n" +
+                          @"Origin: http://example.com" + "\r\n" +
+                          "Sec-WebSocket-Protocol: chat, superchat" + "\r\n" +
+                          "Sec-WebSocket-Version: 13";
+            Dictionary<string, string> expected = new Dictionary<string, string>(); // TODO: Initialize to an appropriate value
             expected["HOST"] = "server.example.com";
             expected["UPGRADE"] = "websocket";
             expected["CONNECTION"] = "Upgrade";

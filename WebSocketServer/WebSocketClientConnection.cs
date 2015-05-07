@@ -97,7 +97,7 @@ namespace WebSocketServer.RFC6455
         //private static string regexp_str = @"^{0}\:\s*(?<value>[.()a-z0-9]*).*$\s";
         //private static string regexp_str = @"^{0}\:\s*(?<value>[.\/\/\\u0000-\\u007F]*).*$\s";
 
-        protected static string Regexp_HandshakeHeaders = @"^{0}\:\s*(?<value>[\s.,+\/\\u0000-\\u00FF]*).*$";
+        protected static string Regexp_HandshakeHeaders = @"^{0}\:\s*(?<value>[\s\.,\+\-\/\\u0000-\\u00FF]*).*$";
 
         protected static Dictionary<string, System.Text.RegularExpressions.Regex> parsers = 
             new Dictionary<string, System.Text.RegularExpressions.Regex>();
@@ -347,9 +347,9 @@ namespace WebSocketServer.RFC6455
                             string.Format("Version is not supported: {0}", _handshakeValues["Sec-WebSocket-Version"]));
             }
 
-            //
+            // #jars@20150507 Fix: Connection header MUST contain the ASCII case-insensitive token equivalent to the value "Upgrade"
             if(_handshakeValues.TryGetValue("CONNECTION", out val))
-                if(val.ToLower().Trim() != "upgrade")
+                if(!val.ToLower().Trim().Contains("upgrade"))
                     throw new ArgumentException("Connection upgrade request invalid");
              
             if (!string.IsNullOrEmpty(_handshakeValues["Sec-WebSocket-Key"]))
