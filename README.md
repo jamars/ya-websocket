@@ -4,7 +4,7 @@ Yet Another WebSocket Experiment...
 
 Just for fun!
 
-<h1>How to build<h1>
+<h1>How to build</h1>
 
 Be lazy.
 Download and install Visual Studio 2013 Community Edition.
